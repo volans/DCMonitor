@@ -3,7 +3,7 @@ DCMonitor
 
 DCMonitor is a total solution to evaluate the power consumption of electronic devices, especially for the devices with Li-Battery. Actually, you can do more with this solution. For example, you can make it work as an accurate power supplier. I only provide a base of this project, you can improve it or change it to any direction as wide as you can. The base of this solution provide below features:
 
-  1.0~5V@3A power supplier;
+  1.5~4.5V@3A power supplier;
   <10uA current measurement accuracy;
   USB2.0 port for PC control;
   Bluetooth 4.0 with BLE support for mobile phone control;
@@ -21,7 +21,7 @@ From global view, the whole design was constructed by three part, controller, po
 
 Controller, I chose a STM32F103 low end processor. It provide USB2.0 full speed internally. And I use a Bluetooth4.0 module to connect to the USART of STM32 to provide BLE interface to mobile phone. The IAR is the best IDE to develop STM32 and it provide 32K memory limited evaluate licenses, which is good enough for this design on STM32F103.
 
-Power Supplier, there are two power supplier, one fix output one to provide power to controller and other on board components. Another one should be adjustable to provide 1.0V~5V for external load. To reach a good accuracy of current measurement, a liner power chip should be selected other than switch type chip, otherwise the noise will beyond the low measuring range of ADC and meaningless. I chose MIC29151-3.3V to provide 3.3V power on board, and chose MIC29502WT to provide adjustable power supply for external. BTW, the adjustable logic is pretty complex, a 12bit DAC and a differential amplifier were took into my design.
+Power Supplier, there are two power supplier, one fix output one to provide power to controller and other on board components. Another one should be adjustable to provide 1.5V~4.5V for external load. To reach a good accuracy of current measurement, a liner power chip should be selected other than switch type chip, otherwise the noise will beyond the low measuring range of ADC and meaningless. I chose MIC29151-3.3V to provide 3.3V power on board, and chose MIC29502WT to provide adjustable power supply for external. BTW, the adjustable logic is pretty complex, a 12bit DAC and a differential amplifier were took into my design.
 
 Load current measurer, I used a AD7714(24bit ADC from ADI).
 
@@ -35,3 +35,15 @@ All opened materials of this project
   DCMonitor Firmware(IAR project);
   DCMonitor PC Client(Eric project); "Eric is a pyQT IDE"
   DCMonitor Mobile Client(Android APK full source);
+  USB Driver for Linux and Windows;
+
+
+Folder architecture:
+    hardware: schematic
+    firmware: DCMOnitor firmware code, a IAR project
+    driver: USB driver of PC to connect to DCMOnitor
+    app: applications to control DCMonitor on PC and Android phone.
+
+
+
+
