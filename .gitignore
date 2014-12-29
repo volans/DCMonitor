@@ -1,0 +1,9 @@
+Firmware/DCMonitor/debug
+*.pbd
+*.browse
+*.pbi
+*.cout
+*.PcbDocPreview
+*.SchDocPreview
+*.o
+*.out
