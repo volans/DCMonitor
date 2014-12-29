@@ -152,7 +152,7 @@ void Ext_ADC_Init(void)
     // chose AIN 3-4 differential, mode register
     ADC_Write_Byte((MODE_REG<<COMM_SET_SHIFT)|(AIN_3_4<<ADC_CHNL_SEL_SHIFT)); 
     // self calibration, gain=4, no burnout current, no filter sync
-    ADC_Write_Byte((SELF_CAL_MODE<<CAL_MODE_SET_SHIFT)|(GAIN_4<<GAIN_SET_SHIFT));
+    ADC_Write_Byte((SELF_CAL_MODE<<CAL_MODE_SET_SHIFT)|(GAIN_1<<GAIN_SET_SHIFT));
 
     while(!ADC_DRDY());
     while(ADC_DRDY());
