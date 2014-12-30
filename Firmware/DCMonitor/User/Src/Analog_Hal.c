@@ -23,7 +23,7 @@
 
 #define BIT(n) (1<<n)
     
-#define SPI_DELAY           500
+#define SPI_DELAY           50
 static void delay(u32 nCount)
 {
 #if BLOCK
@@ -256,29 +256,30 @@ void DAC_Write(u16 data)
     */
 
 /*
-  [0]: VFEEDB, VCON, VREF, VIN
+  [0]: VFEEDB, VCON, VREF, VIN, TEMP
 
   */
 enum{
-  ADC_VFEEDB=0,
-  ADC_VCON,
-  ADC_VREF,
-  ADC_VIN  
+    ADC_VFEEDB=0,
+    ADC_VCON,
+    ADC_VREF,
+    ADC_VIN,
+    ADC_TEMP
 };
-__IO u16 INT_ADC_4_Value[10][4];
+__IO u16 INT_ADC_4_Value[10][5];
 #define  ADC1_DR_Address    ((u32)0x40012400+0x4c)
 
 
 void Int_ADC_DMA_NVIC_Configuration(void)
 {
-  NVIC_InitTypeDef NVIC_InitStructure;
-  
-  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
-  NVIC_InitStructure.NVIC_IRQChannel=DMA1_Channel1_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority=0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd=ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
+    NVIC_InitTypeDef NVIC_InitStructure;
+    
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
+    NVIC_InitStructure.NVIC_IRQChannel=DMA1_Channel1_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority=0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd=ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
 }
 
 
@@ -287,24 +288,24 @@ void Int_ADC_DMA_Configration(void)
     DMA_InitTypeDef DMA_InitStructure_DMA1;
     
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
-    DMA_DeInit(DMA1_Channel1);                                                      // 配置DMA1 的通道1寄存器为缺省值
+    DMA_DeInit(DMA1_Channel1);                                                      // Chose DMA Channel 1
 
-    DMA_InitStructure_DMA1.DMA_PeripheralBaseAddr = ADC1_DR_Address;                     // 配置DMA1 外设基地址为 0x4001244C , 在datasheet上可以查到
-    DMA_InitStructure_DMA1.DMA_MemoryBaseAddr = (u32)(&INT_ADC_4_Value);        // 配置DMA1 内存基地址
-    DMA_InitStructure_DMA1.DMA_DIR = DMA_DIR_PeripheralSRC;                         // 配置DMA1 外设作为数据传输的来源 ，就是外设向内存中搬运数据
-    DMA_InitStructure_DMA1.DMA_BufferSize = 40;                                     // 配置DMA1 数据缓存大小为 10个数据单位
-    DMA_InitStructure_DMA1.DMA_PeripheralInc = DMA_PeripheralInc_Disable;           // 配置DMA1 外设地址寄存器不变
-    DMA_InitStructure_DMA1.DMA_MemoryInc = DMA_MemoryInc_Enable;                    // 配置DMA1 内存地址寄存器递增
-    DMA_InitStructure_DMA1.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;// 配置DMA1 外设数据宽度为 16位 ，这里注意ADC是12位的
-    DMA_InitStructure_DMA1.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;        // 配置DMA1 内存数据宽度为 16位
-    DMA_InitStructure_DMA1.DMA_Mode = DMA_Mode_Circular;                            // 配置DMA1 工作在循环缓存模式
-    DMA_InitStructure_DMA1.DMA_Priority = DMA_Priority_High;                      // 配置DMA1 的相应通道(channel x)的优先级为 中优先级
-    DMA_InitStructure_DMA1.DMA_M2M = DMA_M2M_Disable;                               // 配置DMA1 的相应通道(channel x)内存到内存传输为 使能状态
+    DMA_InitStructure_DMA1.DMA_PeripheralBaseAddr = ADC1_DR_Address;                // source addr 0x4001244C 
+    DMA_InitStructure_DMA1.DMA_MemoryBaseAddr = (u32)(&INT_ADC_4_Value);            // dest addr
+    DMA_InitStructure_DMA1.DMA_DIR = DMA_DIR_PeripheralSRC;                         // directory
+    DMA_InitStructure_DMA1.DMA_BufferSize = 50;                                     // whole buffer size
+    DMA_InitStructure_DMA1.DMA_PeripheralInc = DMA_PeripheralInc_Disable;           // source addr fixed
+    DMA_InitStructure_DMA1.DMA_MemoryInc = DMA_MemoryInc_Enable;                    // dest addr increase
+    DMA_InitStructure_DMA1.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;// 16bit memory
+    DMA_InitStructure_DMA1.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;        // 16bit memory
+    DMA_InitStructure_DMA1.DMA_Mode = DMA_Mode_Circular;                            // circular mode
+    DMA_InitStructure_DMA1.DMA_Priority = DMA_Priority_High;                        // Priority
+    DMA_InitStructure_DMA1.DMA_M2M = DMA_M2M_Disable;                               // memory to memory disable
 
 
-    DMA_Init(DMA1_Channel1, &DMA_InitStructure_DMA1);                               // 初始化 DMA1_Channel1 的相关寄存器 
+    DMA_Init(DMA1_Channel1, &DMA_InitStructure_DMA1);                               // Initial
     DMA_ITConfig(DMA1_Channel1, DMA_IT_TC, ENABLE);
-    DMA_Cmd(DMA1_Channel1, ENABLE);                                                 // 使能 DMA1_Channel1
+    DMA_Cmd(DMA1_Channel1, ENABLE);                                                 // enable channel 1
 
 }
 
@@ -319,7 +320,7 @@ void Int_ADC_Configuration(void)
     ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
     ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
     ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
-    ADC_InitStructure.ADC_NbrOfChannel = 4;
+    ADC_InitStructure.ADC_NbrOfChannel = 5;
     ADC_Init(ADC1, &ADC_InitStructure);
   
   
@@ -328,6 +329,10 @@ void Int_ADC_Configuration(void)
     ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 2, ADC_SampleTime_239Cycles5);
     ADC_RegularChannelConfig(ADC1, ADC_Channel_4, 3, ADC_SampleTime_239Cycles5);
     ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 4, ADC_SampleTime_239Cycles5);
+    ADC_RegularChannelConfig(ADC1, ADC_Channel_16, 5, ADC_SampleTime_239Cycles5);
+    
+    /* Temperature enable*/
+    ADC_TempSensorVrefintCmd(ENABLE);
 
     ADC_DMACmd(ADC1, ENABLE); 
     /* Enable ADC1 */
@@ -367,4 +372,11 @@ u16 readVFEEDB()
     return INT_ADC_4_Value[5][ADC_VFEEDB];
 }
 
+u16 readTemp()
+{
+    //from the SPEC of STM32, 1.43v@25C
+    
+    float t = ((INT_ADC_4_Value[5][ADC_TEMP]/4095)*3.3*25)/1.43;
+    return (u16)t;
+}
 

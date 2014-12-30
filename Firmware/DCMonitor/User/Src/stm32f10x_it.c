@@ -276,23 +276,10 @@ void DMA1_Channel1_IRQHandler(void){
 /* Test on DMA Transfer Complete interrupt */
   if (DMA_GetITStatus(DMA1_IT_TC1))    
   {
-    //ADC_DMA_Configuration();
-    //ADC_Start_Conversion();
     /* Clear DMA Transfer Complete interrupt pending bit */
     DMA_ClearITPendingBit(DMA1_IT_TC1);
   
-    /* ... */
   }
-/*
-    int i = 0;
-    int j = 0;
-    for(i=0;i<4;i++)
-    {
-        for(j=0;j<10;j++)
-        {
-            u16 k = INT_ADC_4_Value[i][j];
-        }
-    }*/
 }
 
 /*******************************************************************************
