@@ -32,6 +32,7 @@ int main( void )
     Set_USBClock();  //72MHz
     MX_GPIO_Init();
     MainPower_CON(SET);
+    USART_Configuration();
     DAC_SPI_Start();
 
     Int_ADC_DMA_NVIC_Configuration();
@@ -45,6 +46,17 @@ int main( void )
     USB_Interrupts_Config(); 
     USB_Init();
     
+    
+    //USART
+    while(1){
+      
+      
+        if(!IsEmpty())
+        {
+          printf("received: 0x%x \n", ReceiveByte());
+        }
+        USART_SendByte('a');
+    }
     //int i =25;  //4.5v
     int i = 1024;
     //int i = 2048; // 

@@ -237,58 +237,57 @@ void LEDPower_CON(FlagStatus p)
 */
 void RCC_Config(void)
 {
-  ErrorStatus HSEStartUpStatus;
-  
-  /* RCC system reset(for debug purpose) */
-  RCC_DeInit();
-
-  /* Enable HSE */
-  RCC_HSEConfig(RCC_HSE_ON);
-
-  /* Wait till HSE is ready */
-  HSEStartUpStatus = RCC_WaitForHSEStartUp();
-
-  if (HSEStartUpStatus == SUCCESS)
-  {
-    /* Enable Prefetch Buffer */
-    FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);
-
-    /* Flash 2 wait state */
-    FLASH_SetLatency(FLASH_Latency_2);
-
-    /* HCLK = SYSCLK */
-    RCC_HCLKConfig(RCC_SYSCLK_Div1);
-
-    /* PCLK2 = HCLK */
-    RCC_PCLK2Config(RCC_HCLK_Div1);
-
-    /* PCLK1 = HCLK/2 */
-    RCC_PCLK1Config(RCC_HCLK_Div2);
-
-    /* ADCCLK = PCLK2/6 */
-    RCC_ADCCLKConfig(RCC_PCLK2_Div6);
-
-
-    RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_9);
-
-    /* Enable PLL */
-    RCC_PLLCmd(ENABLE);
-
-    /* Wait till PLL is ready */
-    while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET)
-    {}
-
-    /* Select PLL as system clock source */
-    RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
-
-    /* Wait till PLL is used as system clock source */
-    while (RCC_GetSYSCLKSource() != 0x08)
-    {}
+    ErrorStatus HSEStartUpStatus;
     
-	/* Configure HCLK clock as SysTick clock source. */
-	SysTick_CLKSourceConfig( SysTick_CLKSource_HCLK );
+    /* RCC system reset(for debug purpose) */
+    RCC_DeInit();
 
-  }
+    /* Enable HSE */
+    RCC_HSEConfig(RCC_HSE_ON);
+
+    /* Wait till HSE is ready */
+    HSEStartUpStatus = RCC_WaitForHSEStartUp();
+
+    if (HSEStartUpStatus == SUCCESS)
+    {
+        /* Enable Prefetch Buffer */
+        FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);
+
+        /* Flash 2 wait state */
+        FLASH_SetLatency(FLASH_Latency_2);
+
+        /* HCLK = SYSCLK */
+        RCC_HCLKConfig(RCC_SYSCLK_Div1);
+
+        /* PCLK2 = HCLK */
+        RCC_PCLK2Config(RCC_HCLK_Div1);
+
+        /* PCLK1 = HCLK/2 */
+        RCC_PCLK1Config(RCC_HCLK_Div2);
+
+        /* ADCCLK = PCLK2/6 */
+        RCC_ADCCLKConfig(RCC_PCLK2_Div6);
+
+
+        RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_9);
+
+        /* Enable PLL */
+        RCC_PLLCmd(ENABLE);
+
+        /* Wait till PLL is ready */
+        while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET)
+        {}
+
+        /* Select PLL as system clock source */
+        RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+
+        /* Wait till PLL is used as system clock source */
+        while (RCC_GetSYSCLKSource() != 0x08)
+        {}
+        
+        /* Configure HCLK clock as SysTick clock source. */
+        SysTick_CLKSourceConfig( SysTick_CLKSource_HCLK );
+    }
 }
 
 /*
@@ -296,11 +295,11 @@ void RCC_Config(void)
 */
 void Set_USBClock(void)
 {
-  /* USBCLK = PLLCLK */
-  RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
+    /* USBCLK = PLLCLK */
+    RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
 
-  /* Enable USB clock */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
+    /* Enable USB clock */
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
 }
 
 
@@ -349,8 +348,6 @@ void Leave_LowPowerMode(void)
   }
 
 }
-
-
 
 /*******************************************************************************
 * Function Name  : USB_Configured_LED
@@ -428,5 +425,54 @@ void Get_SerialNum(void)
     }
 }
 
+
+/*******************************************************************************
+* Function Name  : USART_Configuration
+* Description    : Initialization of USART 2 for BT connection
+* Input          : None.
+* Output         : None.
+* Return         : None.
+*******************************************************************************/
+void USART_Configuration(void)  
+
+{   
+   
+    USART_InitTypeDef USART2_InitStructure; 
+
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2|RCC_APB2Periph_GPIOA,ENABLE);
+    
+
+    USART2_InitStructure.USART_BaudRate=9600;
+    USART2_InitStructure.USART_WordLength=USART_WordLength_8b;
+    USART2_InitStructure.USART_StopBits=USART_StopBits_1;
+    USART2_InitStructure.USART_Parity=USART_Parity_No;
+    USART2_InitStructure.USART_HardwareFlowControl=USART_HardwareFlowControl_None;
+    USART2_InitStructure.USART_Mode=USART_Mode_Rx|USART_Mode_Tx;
+    USART_Init(USART2,&USART2_InitStructure);
+
+    USART_Cmd(USART2,ENABLE);
+    USART_ClearFlag(USART2,USART_FLAG_RXNE);
+} 
+
+void USART_SendByte(u8 d)
+{
+   USART_SendData(USART2, d);  
+   while(USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET){}  
+}
+
+/* Is there any data in USART received rigister*/
+bool IsEmpty(void)
+{
+   if(USART_GetFlagStatus(USART2, USART_FLAG_RXNE) == RESET)
+     return TRUE;
+   else
+     return FALSE;
+}
+
+u8 ReceiveByte(void)
+{
+   while(USART_GetFlagStatus(USART2, USART_FLAG_RXNE) == RESET){}  
+     return (USART_ReceiveData(USART2));
+}
 
 
