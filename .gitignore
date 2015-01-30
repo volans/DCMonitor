@@ -7,3 +7,4 @@ Firmware/DCMonitor/debug
 *.SchDocPreview
 *.o
 *.out
+*.bat
