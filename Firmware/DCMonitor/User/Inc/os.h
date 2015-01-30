@@ -13,14 +13,11 @@
 #include "semphr.h"
 
 /* Task priorities. */
-#define mainQUEUE_POLL_PRIORITY				( tskIDLE_PRIORITY + 2 )
-#define mainCHECK_TASK_PRIORITY				( tskIDLE_PRIORITY + 3 )
-#define mainSEM_TEST_PRIORITY				( tskIDLE_PRIORITY + 1 )
-#define mainBLOCK_Q_PRIORITY				( tskIDLE_PRIORITY + 2 )
-#define mainCREATOR_TASK_PRIORITY           ( tskIDLE_PRIORITY + 3 )
-#define mainFLASH_TASK_PRIORITY				( tskIDLE_PRIORITY + 1 )
-#define mainCOM_TEST_PRIORITY				( tskIDLE_PRIORITY + 1 )
-#define mainINTEGER_TASK_PRIORITY           ( tskIDLE_PRIORITY )
+#define INTERNAL_ADC_TASK_PRI               ( tskIDLE_PRIORITY + 1 )
+#define MAIN_CRL_TASK_PRI				    ( tskIDLE_PRIORITY + 2 )
+#define USB_TASK_PRI				        ( tskIDLE_PRIORITY + 3 )
+#define USART_TASK_PRI       				( tskIDLE_PRIORITY + 1 )
+#define EXTERNAL_ADC_TASK_PRI				( tskIDLE_PRIORITY + 2 )
 
 
 /* The check task uses the sprintf function so requires a little more stack. */
