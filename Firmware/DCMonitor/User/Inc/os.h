@@ -13,11 +13,10 @@
 #include "semphr.h"
 
 /* Task priorities. */
-#define INTERNAL_ADC_TASK_PRI               ( tskIDLE_PRIORITY + 1 )
-#define MAIN_CRL_TASK_PRI				    ( tskIDLE_PRIORITY + 2 )
-#define USB_TASK_PRI				        ( tskIDLE_PRIORITY + 3 )
-#define USART_TASK_PRI       				( tskIDLE_PRIORITY + 1 )
-#define EXTERNAL_ADC_TASK_PRI				( tskIDLE_PRIORITY + 2 )
+#define mainTASK_PRIORI                     ( tskIDLE_PRIORITY )
+#define mainUSART_LOOP_PRIORITY             ( tskIDLE_PRIORITY + 3 )
+#define mainUSB_LOOP_PRIORITY               ( tskIDLE_PRIORITY + 2 )
+
 
 
 /* The check task uses the sprintf function so requires a little more stack. */
@@ -40,28 +39,9 @@ information. */
 #define mainCOM_TEST_LED			( 3 )
 
 /*-----------------------------------------------------------*/
-
-/*
- * The LCD is written two by more than one task so is controlled by a
- * 'gatekeeper' task.  This is the only task that is actually permitted to
- * access the LCD directly.  Other tasks wanting to display a message send
- * the message to the gatekeeper.
- */
-void vLCDTask( void *pvParameters );
-
-
-/*
- * Checks the status of all the demo tasks then prints a message to the
- * display.  The message will be either PASS - and include in brackets the
- * maximum measured jitter time (as described at the to of the file), or a
- * message that describes which of the standard demo tasks an error has been
- * discovered in.
- *
- * Messages are not written directly to the terminal, but passed to vLCDTask
- * via a queue.
- */
-void vCheckTask( void *pvParameters );
-
+void vMainTask(void *pvParameters);
+void vUsartTask(void *pvParameters);
+void vUsbTask(void *pvParameters);
 
 /*-----------------------------------------------------------*/
 

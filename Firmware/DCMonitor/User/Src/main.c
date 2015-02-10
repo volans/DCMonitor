@@ -65,14 +65,13 @@ int main( void )
     __IO u32 a=0;
     __IO u32 b=0;
     do{
-    for(i=25;i<=4070;i+=100){
-
-    DAC_Write((DAC_A<<DAC_CHNL_SEL_SHIFT)|(DAC_WRITE_SPE_REG_UPDATE_OUT<<DAC_OP_SET_SHIFT)|(0xfff&i));
-    DCMoitor_CON(SET);
-    Ext_ADC_Init();
-    a = ADC_ReadVTO();
-    b = ADC_ReadVOG();
-    }
+        for(i=25;i<=4070;i+=100){
+            DAC_Write((DAC_A<<DAC_CHNL_SEL_SHIFT)|(DAC_WRITE_SPE_REG_UPDATE_OUT<<DAC_OP_SET_SHIFT)|(0xfff&i));
+            DCMoitor_CON(SET);
+            Ext_ADC_Init();
+            a = ADC_ReadVTO();
+            b = ADC_ReadVOG();
+        }
     }while(1);
     
     
@@ -81,32 +80,18 @@ int main( void )
     
     while(1);
 #ifdef RTOS
-        //volans semaphore
-        xSemaphore_volans = xSemaphoreCreateBinary();
-        xSemaphoreGive( xSemaphore_volans );
-         
-         if(xSemaphore_volans != NULL)
-         {
-        
-        
-	/* Start the tasks defined within this file/specific to this demo. */
-    xTaskCreate( vCheckTask, "Check", mainCHECK_TASK_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL );
-	xTaskCreate( vLCDTask, "LCD", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
+    //volans semaphore
+    //xSemaphore_volans = xSemaphoreCreateBinary();
+    //xSemaphoreGive( xSemaphore_volans );
+    if(xSemaphore_volans != NULL)
+    {
+        xTaskCreate(vMainTask, "Main", configMINIMAL_STACK_SIZE, NULL, mainTASK_PRIORI, NULL);
+        xTaskCreate(vUsartTask, "Usart", mainCHECK_TASK_STACK_SIZE, NULL, mainUSART_LOOP_PRIORITY, NULL);
+        xTaskCreate(vUsbTask, "Usb", mainCHECK_TASK_STACK_SIZE, NULL, mainUSB_LOOP_PRIORITY, NULL);
 
-	/* The suicide tasks must be created last as they need to know how many
-	tasks were running prior to their creation in order to ascertain whether
-	or not the correct/expected number of tasks are running at any given time. */
-    //vCreateSuicidalTasks( mainCREATOR_TASK_PRIORITY );
-
-	/* Configure the timers used by the fast interrupt timer test. */
-	//vSetupTimerTest();
-
-	/* Start the scheduler. */
-	vTaskStartScheduler();
-
-	/* Will only get here if there was not enough heap space to create the
-	idle task. */
-         }
+        /* Start the scheduler. */
+        vTaskStartScheduler();
+    }
 #endif
         
         

@@ -435,12 +435,10 @@ void Get_SerialNum(void)
 *******************************************************************************/
 void USART_Configuration(void)  
 
-{   
-   
+{
     USART_InitTypeDef USART2_InitStructure; 
 
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2|RCC_APB2Periph_GPIOA,ENABLE);
-    
 
     USART2_InitStructure.USART_BaudRate=9600;
     USART2_InitStructure.USART_WordLength=USART_WordLength_8b;
@@ -475,4 +473,14 @@ u8 ReceiveByte(void)
      return (USART_ReceiveData(USART2));
 }
 
+/*******************************************************************************
+* Function Name  : Monitor_Calibration
+* Description    : Calibrate the monitor
+* Input          : vol, output voltage value.
+* Output         : None.
+* Return         : TRUE/FALSE.
+*******************************************************************************/
+bool Monitor_Calibration(u8 vol)
+{
 
+}
