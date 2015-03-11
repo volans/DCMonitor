@@ -1,21 +1,22 @@
+![alt text](http://volans.co/wp-content/uploads/2015/01/IMG_20131-e1420724678818.jpg)
+
 DCMonitor
-=========
+====
+DCMonitor is a total solution to evaluate the power consumption of electronic devices, especially for the devices with Li-Battery. Actually, you can do more with this solution. For example, make it work as an accurate power supplier. I only provide a base of this project, you can improve it or change it to any direction as wide as you can. The base of this solution provide below features:
 
-DCMonitor is a total solution to evaluate the power consumption of electronic devices, especially for the devices with Li-Battery. Actually, you can do more with this solution. For example, you can make it work as an accurate power supplier. I only provide a base of this project, you can improve it or change it to any direction as wide as you can. The base of this solution provide below features:
+* 1.5~4.5V@3A power supplier; 
+* <10uA current measurement accuracy; 
+* USB2.0 port for PC control; 
+* Bluetooth 4.0 with BLE support for mobile phone control; 
+* ...to be added.
 
-  1.5~4.5V@3A power supplier;
-  <10uA current measurement accuracy;
-  USB2.0 port for PC control;
-  Bluetooth 4.0 with BLE support for mobile phone control;
-  ...to be added.
-  
-Why DCMonitor?
+***Why DCMonitor?***
 
 There are many power consumption measurement solutions in the world, such as Angilent N6705 for the high end users, and the “PowerMonitor” from Monsoon Solutions for flexible users. But these kind of solutions cannot fit my using scenario sometimes. N6705 is too heavy and complex. I have two PowerMonitor in hand, they are small enough and provide powerful APIs for customization too, but I have to take a laptop when I am doing a filed test. BTW, I would love to control more... so I decide to make my own one and name it as DCMonitor.
 
 Before starting up, I assembled one of my PowerMonitor in hand. I had to say Monsoon Solutions did a real good job on this small equipment although I did not understand the details. The PCB was very complex with many many logical devices and a PIC microprocessor. To be honest, it beyond my capability to get any small tips about their design. It was really good, because I can make a real personal one without impacts from existed product. Whatever, I copied part of the idea.
 
-Draft Hardware Design
+***Draft Hardware Design***
 
 From global view, the whole design was constructed by three part, controller, power supplier and load current measurer.
 
@@ -25,25 +26,23 @@ Power Supplier, there are two power supplier, one fix output one to provide powe
 
 Load current measurer, I used a AD7714(24bit ADC from ADI).
 
-Software architecture
-FreeRTOS and STM32 formal firmware will be used to build up the firmware of DCMonitor. From PC side, python+pyusb+qt+matplotlib will be used to provide multi-platform support, which means DCMonitor can be controlled in Windows, Linux or Mac. The whole transform protocols will be opened, you can make any client as you want. From mobile phone part, iOS or Android, it will be a standard UART port through BLE, and this project provide a demo on Android.
+***Software architecture***  
 
-All opened materials of this project
+FreeRTOS and STM32 formal firmware will be used to build up the firmware of DCMonitor.  
+From PC side, python+pyusb+qt+matplotlib will be used to provide multi-platform support, which means DCMonitor can be controlled in Windows, Linux or Mac. The whole transform protocols will be opened, you can make any client as you want. From mobile phone part, iOS or Android, it will be a standard UART port through BLE, and this project provide a demo on Android.
 
-  DCMonitor Schematic;
-  DCMOnitor PCB Placement;
-  DCMonitor Firmware(IAR project);
-  DCMonitor PC Client(Eric project); "Eric is a pyQT IDE"
-  DCMonitor Mobile Client(Android APK full source);
-  USB Driver for Linux and Windows;
+***All opened materials of this project***
 
+* DCMonitor Schematic; 
+* DCMOnitor PCB Placement; 
+* DCMonitor Firmware(IAR project); 
+* DCMonitor PC Client(Eric project); "Eric is a pyQT IDE" 
+* DCMonitor Mobile Client(Android APK full source); 
+* USB Driver for Linux and Windows;
 
-Folder architecture:
-    hardware: schematic
-    firmware: DCMOnitor firmware code, a IAR project
-    driver: USB driver of PC to connect to DCMOnitor
-    app: applications to control DCMonitor on PC and Android phone.
+***Folder architecture***  
 
-
-
-
+* hardware: schematic  
+* firmware: DCMOnitor firmware code, a IAR project  
+* driver: USB driver of PC to connect to DCMOnitor  
+* app: applications to control DCMonitor on PC and Android phone.
